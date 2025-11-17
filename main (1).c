@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <string.h>  // Incluído para usar memcpy, se necessário
+#include <string.h> 
 
-// Estrutura para armazenar as métricas de passos (comparações e trocas)
+// Estrutura para as métricas
 typedef struct {
-    long long steps_cmp, steps_swap;  // Contadores de comparações e trocas
+    long long steps_cmp, steps_swap; 
 } Metrics;
 
 // Funções de ordenação
 
-// Reseta as métricas (passos)
+// Reset métricas 
 void reset_metrics(Metrics *m) {
     m->steps_cmp = 0;
     m->steps_swap = 0;
@@ -47,7 +47,7 @@ void insertion_sort(int *v, size_t n, Metrics *m) {
     }
 }
 
-// Quick Sort (partição Lomuto)
+// Quick Sort
 void quick_sort(int *v, size_t n, Metrics *m) {
     if (n <= 1) return;
 
@@ -71,18 +71,17 @@ void quick_sort(int *v, size_t n, Metrics *m) {
     if (i < n) quick_sort(v + i, n - i, m);
 }
 
-// Função para medir o tempo de execução
 double run_sort(void (*sort_fn)(int*, size_t, Metrics*), int *v, size_t n, Metrics *m) {
     reset_metrics(m);
     clock_t t0 = clock();
     sort_fn(v, n, m);
     clock_t t1 = clock();
-    return 1000.0 * (t1 - t0) / CLOCKS_PER_SEC;  // Tempo em milissegundos
+    return 1000.0 * (t1 - t0) / CLOCKS_PER_SEC; 
 }
 
 // Função para gerar vetores aleatórios
 void generate_random_array(int *v, size_t n) {
-    printf("Gerando vetor aleatório para N = %zu...\n", n);  // Debug
+    printf("Gerando vetor aleatório para N = %zu...\n", n); 
     for (size_t i = 0; i < n; i++) {
         v[i] = rand() % 1000;  // Vetor com números aleatórios de 0 a 999
     }
@@ -94,30 +93,30 @@ void generate_random_array(int *v, size_t n) {
 }
 
 int main() {
-    int rgm[] = {4, 4, 7, 5, 3, 0, 7, 1};  // RGM como exemplo
+    int rgm[] = {4, 4, 7, 5, 3, 0, 7, 1};  
     size_t rgm_len = sizeof(rgm) / sizeof(rgm[0]);
 
     Metrics m_bubble, m_insertion, m_quick;
     int v_bubble[rgm_len], v_insertion[rgm_len], v_quick[rgm_len];
 
-    // Ordenando o RGM
+    // Ordenação do RGM
     printf("RGM: ");
     for (size_t i = 0; i < rgm_len; i++) {
         printf("%d ", rgm[i]);
     }
     printf("\n");
 
-    // Teste o Bubble Sort
+    // Teste Bubble Sort
     for (size_t i = 0; i < rgm_len; i++) v_bubble[i] = rgm[i];
     double time_bubble = run_sort(bubble_sort, v_bubble, rgm_len, &m_bubble);
     printf("Bubble Sort: Passos = %lld, Trocas = %lld, Tempo = %.3f ms\n", m_bubble.steps_cmp, m_bubble.steps_swap, time_bubble);
 
-    // Teste o Insertion Sort
+    // Teste Insertion Sort
     for (size_t i = 0; i < rgm_len; i++) v_insertion[i] = rgm[i];
     double time_insertion = run_sort(insertion_sort, v_insertion, rgm_len, &m_insertion);
     printf("Insertion Sort: Passos = %lld, Trocas = %lld, Tempo = %.3f ms\n", m_insertion.steps_cmp, m_insertion.steps_swap, time_insertion);
 
-    // Teste o Quick Sort
+    // Teste Quick Sort
     for (size_t i = 0; i < rgm_len; i++) v_quick[i] = rgm[i];
     double time_quick = run_sort(quick_sort, v_quick, rgm_len, &m_quick);
     printf("Quick Sort: Passos = %lld, Trocas = %lld, Tempo = %.3f ms\n", m_quick.steps_cmp, m_quick.steps_swap, time_quick);
